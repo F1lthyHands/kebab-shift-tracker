@@ -17,9 +17,6 @@ class Shift(db.Model):
     start_time = db.Column(db.DateTime, nullable=True)
     end_time = db.Column(db.DateTime, nullable=True)
 
-with app.app_context():
-    db.create_all()
-
 @app.route('/')
 def index():
     return render_template('index.html')
