@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Tracker</title>
+</head>
+<body>
+    <h1>Shift Tracker</h1>
+    <form id="login-form">
+        <label for="user-id">User ID:</label>
+        <input type="text" id="user-id" name="user-id" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <div id="shift-buttons" style="display:none;">
+        <button onclick="startShift()">Start Shift</button>
+        <button onclick="endShift()">End Shift</button>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const userId = document.getElementById('user-id').value;
+            localStorage.setItem('userId', userId);
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('shift-buttons').style.display = 'block';
+        });
+
+        function startShift() {
+            const userId = localStorage.getItem('userId');
+            fetch('/start_shift', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId })
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            });
+        }
+
+        function endShift() {
+            const userId = localStorage.getItem('userId');
+            fetch('/end_shift', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: userId })
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            });
+        }
+    </script>
+</body>
+</html>
