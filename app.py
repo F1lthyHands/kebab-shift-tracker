@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shifts.db'
@@ -16,7 +17,8 @@ class Shift(db.Model):
     start_time = db.Column(db.DateTime, nullable=True)
     end_time = db.Column(db.DateTime, nullable=True)
 
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -48,6 +50,5 @@ def end_shift():
     return jsonify({'message': 'No active shift found'})
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
