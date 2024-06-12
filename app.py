@@ -3,9 +3,24 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shifts.db'
-db = SQLAlchemy(app)
+# Initialize db without binding it to an app instance
+db = SQLAlchemy()
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shifts.db'
+    
+    # Bind the SQLAlchemy instance to the app
+    db.init_app(app)
+
+    # Create database tables when the app is created
+    with app.app_context():
+        db.create_all()
+
+    return app
+
+# Create the Flask application instance
+app = create_app()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
